@@ -1,0 +1,18 @@
+[package]
+name = "mercury"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+hg = { path = "../hg" }
+tokio = { version = "1.26.0", features = ["full"] }
+
+[[bin]]
+name = "mercury_master"
+path = "src/master/master.rs"
+
+[[bin]]
+name = "node0"
+path = "src/node0.rs"
