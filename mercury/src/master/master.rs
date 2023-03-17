@@ -13,25 +13,16 @@ async fn main() -> Result<(), Box<dyn Error>> {
         .nth(1)
         .unwrap_or_else(|| "127.0.0.1:8080".to_string());
 
-    // Next up we create a TCP listener which will listen for incoming
-    // connections. This TCP listener is bound to the address we determined
-    // above and must be associated with an event loop.
     let listener = TcpListener::bind(&addr).await?;
-    println!("Listening on: {}", addr);
+    println!("mercury_master running on {}", addr);
 
-    let max_msg_size_kb = 4; // Max number of KB (1024 bytes) that an incoming msg can be
+    // Max number of KB (1024 bytes) that an incoming msg can be
+    let max_msg_size_kb = 1;
 
     loop {
         // Asynchronously wait for an inbound socket.
         let (mut socket, _) = listener.accept().await?;
-
-        // And this is where much of the magic of this server happens. We
-        // crucially want all clients to make progress concurrently, rather than
-        // blocking one on completion of another. To achieve this we use the
-        // `tokio::spawn` function to execute the work in the background.
-        //
-        // Essentially here we're executing a new task to run concurrently,
-        // which will allow all of our clients to be processed concurrently.
+        println!("New connection");
 
         tokio::spawn(async move {
             let mut buf = vec![0; 1024*max_msg_size_kb];
