@@ -11,10 +11,31 @@ use std::str;
 async fn main() -> Result<(), Box<dyn Error>> {
     let addr = env::args()
         .nth(1)
-        .unwrap_or_else(|| "127.0.0.1:8080".to_string());
+        .unwrap_or_else(|| "0.0.0.0:5923".to_string());
+        // .unwrap_or_else(|| "127.0.0.1:8080".to_string());
 
     let listener = TcpListener::bind(&addr).await?;
-    println!("mercury_master running on {}", addr);
+
+    let header = r#"Running:
+    ╭────────────────────────────╮
+    │                            │
+    │    80                      │
+    │     ╭────┬────╮            │
+    │     │    │    │            │
+    │     │         │╭─────╮     │
+    │     │         ││     │     │
+    │     │    │    ││     │     │
+    │     ╰────┴────╯╰───  │     │
+    │                │     │     │
+    │                ╰─────╯     │     
+    │          mercury           │
+    │          200.5923          │
+    ╰────────────────────────────╯"#;
+
+
+    println!("{}",header);
+    println!("Address: {}", addr);
+
 
     // Max number of KB (1024 bytes) that an incoming msg can be
     let max_msg_size_kb = 1;
