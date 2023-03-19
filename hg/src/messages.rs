@@ -5,7 +5,7 @@ pub use vec3::Vec3; // Shorted module path (otherwise, use hg::messages::vec3::V
 // TODO: Declare all other message types (found under messages) here, publicly.
 
 pub trait Msg {
-    fn dtype(&self) -> String;
+    fn dtype() -> String;
     fn len(&self) -> usize;
     fn serialize(&self) -> Vec<u8>;
     fn deserialize(&mut self, buf: &[u8]);

@@ -3,8 +3,7 @@ use tokio::io::AsyncWriteExt;
 use std::any::TypeId;
 use std::io;
 use futures::executor::block_on;
-
-
+use crate::messages::Msg;
 use std::io::Write;
 
 // TODO: Abstract away TCP to enable other protocols to be used (e.g. UDP)
@@ -85,13 +84,13 @@ async fn connect_to_master(topic: &str, topic_type: &str, pub_addr: &str) -> Str
 }
 
 impl Publisher{
-    pub async fn new<T: 'static>(topic: &str, queue_len: u32) ->  Publisher{
+    pub async fn new<T: 'static + Msg>(topic: &str, queue_len: u32) ->  Publisher{
 
-        let topic_type = "Vec3";
+        let topic_type = T::dtype();
         let pub_addr = "127.0.0.1:8080".to_owned();
         let pub_stream = TcpStream::connect(pub_addr.clone()).await.unwrap();
 
-        let guid = block_on(connect_to_master(topic, topic_type, &pub_addr));
+        let guid = block_on(connect_to_master(topic, &topic_type, &pub_addr));
 
         Self{topic: topic.to_owned(),
             topic_type: topic_type.to_owned(),
@@ -103,9 +102,10 @@ impl Publisher{
             publisher: pub_stream,
         }
     }
-    pub async fn publish<T: 'static>(&mut self, msg: &str) {
+    pub async fn publish<T: 'static + Msg>(&mut self, msg: &T) {
         // let msg = format!("Publisher.Topic:{}.Type:{:?}", &self.topic, self.topic_type);
-        // self.publisher.write(msg.as_bytes()).await;
+        let b = &msg.serialize();
+        self.publisher.write(b);
         println!("Publish");
     }
 }

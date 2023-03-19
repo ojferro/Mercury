@@ -12,7 +12,7 @@ pub struct Vec3 {
 }
 
 impl Msg for Vec3 {
-    fn dtype(&self) -> String {"Vec3".to_string()}
+    fn dtype() -> String {"Vec3".to_string()}
     fn len(&self) -> usize {size_of::<f32>()}
     fn serialize(&self) -> Vec<u8> {
         bincode::serialize(&self).unwrap()
