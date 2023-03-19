@@ -8,7 +8,13 @@ use std::{thread, time};
 use hg::messages::Msg; // TODO: Figure out way to not have to import Msg explicitly...
 use hg::messages::Vec3;
 use hg::publisher::Publisher;
+use hg::subscriber::Subscriber;
 // use hg::publisher::Node;
+
+fn subCallback(){
+    println!("Received data in subscriber callback");
+    // println!("{:?}", data);
+}
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
@@ -22,14 +28,14 @@ async fn main() -> Result<(), Box<dyn Error>> {
         // stream.write_all(b"hello world from node0.rs! This is a much longer string now, let's see how it affects the performance and the time it takes to send the message!!! hello world from node0.rs! This is a much longer string now, let's see how it affects the performance and the time it takes to send the message!!! hello world from node0.rs! This is a much longer string now, let's see how it affects the performance and the time it takes to send the message!!!hello world from node0.rs! This is a much longer string now, let's see how it affects the performance and the time it takes to send the message!!!hello world from node0.rs! This is a much longer string now, let's see how it affects the performance and the time it takes to send the message!!!hello world from node0.rs! This is a much longer string now, let's see how it affects the performance and the time it takes to send the message!!! hello world from node0.rs! This is a much longer string now, let's see how it affects the performance and the time it takes to send the message!!! hello world from node0.rs! This is a much longer string now, let's see how it affects the performance and the time it takes to send the message!!! hello world from node0.rs! This is a much longer string now, let's see how it affects the performance and the time it takes to send the message!!! hello world from node0.rs! This is a much longer string now, let's see how it affects the performance and the time it takes to send the message!!! hello world from node0.rs! This is a much longer string now, let's see how it affects the performance and the time it takes to send the message!!! hello world from node0.rs! This is a much longer string now, let's see how it affects the performance and the time it takes to send the message!!! hello world from node0.rs! This is a much longer string now, let's see how it affects the performance and the time it takes to send the message!!! hello world from node0.rs! This is a much longer string now, let's see how it affects the performance and the time it takes to send the mesTHIS ARE THE LAST 26 BYTES").await?;
         // stream.write_all(b"hello").await?;
         // let v = Vec3{x:1029824.1,y:1029824.2,z:1029824.3333};
-        let topic = String::from("myTopic");
-        let queue_len = 10_u32;
 
-        println!("About to advertise");
-        let mut p = Publisher::new::<Vec3>(topic, queue_len).await;
-        println!("Interim");
-        p.advertise().await;
-        println!("Just advertised");
+        let topic_sub = "myTopic";
+        let queue_len_sub = 1_u32;
+        let mut s = Subscriber::new::<Vec3>(topic_sub, queue_len_sub, subCallback);
+        
+        let topic_pub = "myTopic";
+        let queue_len = 10_u32;
+        let mut p = Publisher::new::<Vec3>(topic_pub, queue_len).await;
         // let b = &v.serialize();
         // stream.write_all(b).await?;
         // stream.readable().await?;
