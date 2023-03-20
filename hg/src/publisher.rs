@@ -55,11 +55,8 @@ async fn read_reply(stream: &TcpStream, buf: &mut [u8]) -> usize{
     }
 }
 
-async fn connect_to_master(topic: &str, topic_type: &str, pub_addr: &str) -> String{
-    // Connect to master
-    let master_address = "127.0.0.1:5923"; // Addr can be ngrok tcp addr, it works!
-    let mut master = TcpStream::connect(master_address).await.unwrap();
-    
+async fn connect_to_master(master: &mut TcpStream, topic: &str, topic_type: &str, pub_addr: &str) -> String{
+      
     // Advertise new publisher with master node
     let msg = Schema::advertise_schema(topic, topic_type, pub_addr);
     master.write(msg.as_bytes()).await;
@@ -90,7 +87,11 @@ impl Publisher{
         let pub_addr = "127.0.0.1:8080".to_owned();
         let pub_stream = TcpStream::connect(pub_addr.clone()).await.unwrap();
 
-        let guid = block_on(connect_to_master(topic, &topic_type, &pub_addr));
+        // Connect to master
+        let master_address = "127.0.0.1:5923"; // Addr can be ngrok tcp addr, it works!
+        let mut master = TcpStream::connect(master_address).await.unwrap();
+
+        let guid = block_on(connect_to_master(&mut master, topic, &topic_type, &pub_addr));
 
         Self{topic: topic.to_owned(),
             topic_type: topic_type.to_owned(),

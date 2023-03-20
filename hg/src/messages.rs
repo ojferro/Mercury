@@ -8,5 +8,5 @@ pub trait Msg {
     fn dtype() -> String;
     fn len(&self) -> usize;
     fn serialize(&self) -> Vec<u8>;
-    fn deserialize(&mut self, buf: &[u8]);
+    fn deserialize(buf: &[u8]) -> Self;
 }

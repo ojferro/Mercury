@@ -17,8 +17,9 @@ impl Msg for Vec3 {
     fn serialize(&self) -> Vec<u8> {
         bincode::serialize(&self).unwrap()
     }
-    fn deserialize(&mut self, buf: &[u8]) {
+    fn deserialize(buf: &[u8]) -> Vec3 {
         let v: Vec3 = bincode::deserialize(&buf[..]).unwrap();
-        *self = v;
+        // *self = v;
+        v
     }
 }

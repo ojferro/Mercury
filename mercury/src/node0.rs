@@ -11,9 +11,9 @@ use hg::publisher::Publisher;
 use hg::subscriber::Subscriber;
 // use hg::publisher::Node;
 
-fn subCallback(){
+fn sub_callback(v: Vec3){
     println!("Received data in subscriber callback");
-    // println!("{:?}", data);
+    println!("{:?}", v.x);
 }
 
 #[tokio::main]
@@ -30,13 +30,14 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
         let topic_sub = "myTopic";
         let queue_len_sub = 1_u32;
-        let mut s = Subscriber::new::<Vec3>(topic_sub, queue_len_sub, subCallback);
+        let mut s = Subscriber::<Vec3>::new(topic_sub, queue_len_sub, sub_callback);
+        s.subscribe();
         
         let topic_pub = "myTopic";
         let queue_len = 10_u32;
         let mut p = Publisher::new::<Vec3>(topic_pub, queue_len).await;
-        let v = Vec3{x:1029824.1,y:1029824.2,z:1029824.3333};
-        p.publish(&v);
+        let v = Vec3{x:1.1,y:2.2,z:3.3};
+        p.publish(&v).await;
         // let b = &v.serialize();
         // stream.write_all(b).await?;
         // stream.readable().await?;
